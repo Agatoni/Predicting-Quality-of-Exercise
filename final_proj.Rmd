@@ -1,0 +1,143 @@
+---
+title: "Predicting Quality of Exercise Using Data From Accelerometers"  
+subtitle: "Practical Machine Learning, Final Project"
+author: "Sarah Agatoni"
+date: "Aug, 2020"
+output: html_document
+---
+<br>
+
+### Summary 
+
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. 
+
+In this project, I use [data](http://web.archive.org/web/20161224072740/http:/groupware.les.inf.puc-rio.br/har) from accelerometers on the belt, forearm, arm, and dumbell of 6 participants to predict the manner in which they did the exercises. I begin by handling missing values and selecting features. I then split the train data into training and validation sets, from which I build and test a decision tree and random forest model. I finish by applying the most accurate model to the test data.
+
+<br>
+
+**Environment**
+```{r message=FALSE, warning=FALSE}
+if (!require("pacman")) install.packages("pacman"); library(pacman)
+pacman::p_load(caret, ggplot2, randomForest, naniar, rpart)
+```
+
+<br>
+
+### Data
+
+*read in training data*
+```{r}
+data <- read.csv("proj_train.csv", na.strings = c("NA", "#DIV/0!", ""))
+dim(data)
+```
+
+<br>
+
+*note that some features have many missing values*
+```{r}
+gg_miss_var(data[, 1:20], show_pct = TRUE) 
+```
+
+<br>
+
+*select variables with more than 80% non-missing observations*
+```{r}
+newdata <- data[sapply(data, naniar::prop_miss) < 0.8]
+dim(newdata)
+```
+
+<br>
+
+*eliminate identifiers and timestamps such as `user_name`  `cvtd_timestamp`, all contained in columns 1 through 5* 
+```{r}
+newdata <- newdata[, -(1:5)]
+dim(newdata)
+```
+
+<br>
+
+*split data into training and validation sets*
+```{r}
+set.seed(100)
+inTrain <- caret::createDataPartition(newdata$classe, p = 0.75, list = FALSE)
+training <- newdata[inTrain, ]
+validation <- newdata[-inTrain, ]
+```
+
+<br>
+
+### Decision Tree Model 
+
+*fit a decision tree model with `classe` as the dependent variable:*
+```{r cache=TRUE}
+set.seed(101)
+decFit <- rpart(classe ~ ., data = training, method = "class")
+```
+
+<br>
+
+*predict `classe` in validation set*
+```{r}
+decPred <- predict(decFit, validation[, -55], type="class")
+```
+
+<br>
+
+*confusion matrix*
+```{r}
+confusionMatrix(decPred, validation$classe)
+```
+**The decision tree model has an in-sample error of about 26%.** This is higher than we'd like.
+
+<br>
+
+### Random Forest Model
+
+*Next, we try a random forest model:*
+```{r cache=TRUE}
+rfControl <- trainControl(method = "cv", number = 3, verboseIter = FALSE)
+rfFit <- train(classe ~ ., data = training, method = "rf", trControl = rfControl)
+```
+
+<br>
+
+*apply random forest model to validation set*
+```{r}
+rfPred <- predict(rfFit, validation[, -55])
+confusionMatrix(rfPred, validation$classe)
+```
+**The random forest model has an in-sample error of less than 1%.** So we use this model to predict `classe` in the testing data. 
+
+<br>
+
+### Applying Best Model to Test Set
+
+*read in testing data*
+```{r}
+test <- read.csv("proj_test.csv", na.strings = c("NA", "#DIV/0!", ""))
+```
+
+<br>
+
+*create corresponding names and factor levels in test set*
+```{r}
+both <- intersect(names(newdata), names(test)) 
+testdata <- test[both]
+
+for (var in both) { 
+    if (class(data[[var]]) == "factor") { 
+        levels(testdata[[var]]) <- levels(data[[var]])
+    } 
+}
+```
+
+<br>
+
+*predict*
+```{r}
+predict(rfFit, newdata = testdata)
+```
+
+
+__________________________________________________________END__________________________________________________________
+
