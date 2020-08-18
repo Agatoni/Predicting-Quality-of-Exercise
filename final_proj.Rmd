@@ -1,8 +1,6 @@
 ---
-title: "Predicting Quality of Exercise Using Data From Accelerometers"  
-subtitle: "Practical Machine Learning, Final Project"
+title: "Predicting Quality of Exercise Using Data From Wearable Tech"  
 author: "Sarah Agatoni"
-date: "Aug, 2020"
 output: html_document
 ---
 <br>
