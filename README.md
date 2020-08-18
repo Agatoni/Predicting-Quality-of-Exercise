@@ -1,4 +1,4 @@
-# Prediciting-Quality-of-Exercise
+# Predicting-Quality-of-Exercise
 With wearable tech such as Fitbits and Apple Watches, people can quantify how much of a particular activity they do, but they rarely quantify how well they do it. This project builds a classification algorithm to predict how well six subjects perform a weight lifting exercise. It is undertaken as the final project for Coursera's Practical Machine Learning course.
 
 ## Data 
@@ -13,7 +13,7 @@ Human Activity Recognition [data](http://web.archive.org/web/20161224072740/http
 ## Deliverables: 
 <ul >
   <li><code><b>final_proj.Rmd </b> </code>: an R Mardown file that contains the classification algorithm </li>
-  <li><code><b>final_proj.html</b></code>: a compiled HTML version of the same.</li>
+  <li><code><b>final_proj.html</b></code>: a compiled HTML version of the same</li>
 </ul>
 
 ## Operating Environment 
