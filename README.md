@@ -11,10 +11,8 @@ Human Activity Recognition [data](http://web.archive.org/web/20161224072740/http
 - Apply most accurate model to test data.
 
 ## Deliverables: 
-<ul >
-  <li><code><b>final_proj.Rmd </b> </code>: an R Mardown file that contains the classification algorithm </li>
-  <li><code><b>final_proj.html</b></code>: a compiled HTML version of the same</li>
-</ul>
+- <code><b>final_proj.Rmd </b> </code>: an R Mardown file that contains the classification algorithm 
+- <code><b>final_proj.html</b></code>: a compiled [HTML version](https://agatoni.github.io/Predicting-Quality-of-Exercise/final_proj.html) of the same
 
 ## Operating Environment 
 RStudio
